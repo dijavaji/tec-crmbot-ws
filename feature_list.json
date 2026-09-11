@@ -1,0 +1,253 @@
+{
+  "project": "Smart Ventas IA",
+  "description": "Plan de implementación del microservicio backend tec-crmbot-ws: Spring Boot 3.2.0 + Java 17. Procesa imágenes de cuadernos de ventas delegando el OCR/IA al microservicio tec-enrichmentAI-ws y persiste los resultados en MySQL.",
+  "rules": {
+    "one_feature_at_a_time": true,
+    "require_tests_to_close": true,
+    "require_approved_spec_to_implement": true,
+    "valid_status": ["pending", "history_ready", "in_progress", "done", "blocked"],
+    "sdd_required_when": "feature has \"sdd\": true"
+  },
+  "features": [
+    {
+      "id": "TASK-1.1",
+      "name": "jpa_entities",
+      "title": "JPA Entities (Sale, SaleItem, NotebookImage)",
+      "description": "**Como** capa de persistencia **Quiero** definir las entidades JPA del dominio **Para** mapear el modelo de datos en MySQL según data-model.md",
+      "acceptance": [
+        "Entidad Sale (@Entity, tabla: sale) con campos: id (UUID PK), businessId, userId, saleDate, saleTime, totalAmount, itemCount, source, averageConfidence, createdAt y relación @OneToMany a SaleItem",
+        "Entidad SaleItem (@Entity, tabla: sale_item) con campos: id (UUID PK), saleId (FK), productName, quantity, totalAmount, ocrConfidence, manuallyEdited",
+        "Entidad NotebookImage (@Entity, tabla: notebook_image) con campos: id (PK), saleId (FK), storageUrl, processingStatus (PENDING/PROCESSED/ERROR), widthPx, heightPx, uploadedAt",
+        "Relaciones JPA mapeadas correctamente (Sale @OneToMany → SaleItem)"
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.2",
+      "name": "jpa_repositories",
+      "title": "Spring Data JPA Repositories (SaleRepository, SaleItemRepository)",
+      "description": "**Como** capa de acceso a datos **Quiero** implementar los repositorios Spring Data JPA **Para** realizar operaciones CRUD y consultas personalizadas sobre las entidades de ventas",
+      "acceptance": [
+        "SaleRepository extiende JpaRepository<Sale, String> con métodos: findByBusinessIdAndSaleDate, findByBusinessIdAndSaleDateBetween, findTop10ByBusinessIdOrderBySaleDateDesc",
+        "SaleItemRepository extiende JpaRepository<SaleItem, String> con métodos: findBySaleId, findBySaleIdAndManuallyEdited",
+        "Tests unitarios con @DataJpaTest para los repositorios"
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.3",
+      "name": "flyway_migrations",
+      "title": "Flyway Migrations (V1 schema, V2 indexes)",
+      "description": "**Como** sistema de base de datos **Quiero** definir las migraciones Flyway **Para** crear y versionar el esquema de la base de datos MySQL de forma reproducible",
+      "acceptance": [
+        "V1__initial_schema.sql crea las tablas: sale, sale_item, notebook_image con sus columnas, tipos y restricciones correctas",
+        "V2__add_indexes.sql agrega índices en las columnas de búsqueda frecuente (businessId, saleDate, saleId)",
+        "Las migraciones se ejecutan correctamente en el contexto de test (H2 o MySQL embebido)"
+      ],
+      "sdd": false,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.4",
+      "name": "dto_objects",
+      "title": "DTOs (SaleItemDTO, ProcessImageRequest/Response, SaleRegistrationRequest/Response, KPIResponse, ValidationResultDTO, EnrichmentRequest/Response/ItemDTO)",
+      "description": "**Como** capa de transferencia de datos **Quiero** definir todos los DTOs del microservicio **Para** desacoplar las entidades JPA de los contratos de la API y del microservicio tec-enrichmentAI-ws",
+      "acceptance": [
+        "SaleItemDTO: productName, quantity, totalAmount, ocrConfidence, manuallyEdited",
+        "ProcessImageRequest: image (MultipartFile); ProcessImageResponse: action, preFilled[], toReview[]",
+        "SaleRegistrationRequest: items[], source, averageConfidence; SaleRegistrationResponse: id, totalAmount, itemCount, createdAt",
+        "KPIResponse: dailyTotal, transactionCount, averageTicket",
+        "ValidationResultDTO: action, preFilled[], toReview[]",
+        "EnrichmentRequest: imageData (Base64), context (\"SALES_OCR\"), businessId",
+        "EnrichmentResponse: success, items[], confidence, processingTime",
+        "EnrichmentItemDTO: product, quantity, amount, confidence"
+      ],
+      "sdd": false,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.5",
+      "name": "mappers",
+      "title": "Mappers (SaleMapper, SaleItemMapper, EnrichmentMapper)",
+      "description": "**Como** capa de transformación **Quiero** implementar los mappers entre entidades y DTOs **Para** convertir datos entre las capas del microservicio sin acoplar entidades a contratos externos",
+      "acceptance": [
+        "SaleMapper: toDTO(sale) → SaleRegistrationResponse",
+        "SaleItemMapper: toDTO(saleItem) → SaleItemDTO",
+        "EnrichmentMapper: toSaleItems(List<EnrichmentItemDTO>) → List<SaleItemDTO>; toEnrichmentRequest(imageData, businessId) → EnrichmentRequest",
+        "Tests unitarios para cada mapper"
+      ],
+      "sdd": false,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.6",
+      "name": "enrichment_ai_client",
+      "title": "EnrichmentAiClient (HTTP Client a tec-enrichmentAI-ws)",
+      "description": "**Como** cliente HTTP externo **Quiero** implementar EnrichmentAiClient **Para** comunicarme con el microservicio tec-enrichmentAI-ws que encapsula el procesamiento IA/Gemini",
+      "acceptance": [
+        "EnrichmentAiClient usa WebClient configurado con base-url (${enrichment-ai.base-url}) y timeout (${enrichment-ai.timeout})",
+        "Método processImage(EnrichmentRequest) → EnrichmentResponse con manejo de errores HTTP",
+        "Métodos healthCheck() y getServiceInfo() implementados",
+        "Tests unitarios con MockWebServer o WireMock"
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.7",
+      "name": "enrichment_ai_service",
+      "title": "EnrichmentAiService",
+      "description": "**Como** servicio de integración IA **Quiero** implementar EnrichmentAiService **Para** orquestar el procesamiento de imágenes delegando al microservicio tec-enrichmentAI-ws con reintentos",
+      "acceptance": [
+        "processImage(bytes, businessId) → List<SaleItemDTO>: convierte bytes a Base64, llama al cliente, mapea la respuesta con EnrichmentMapper",
+        "processImageWithRetry aplica Spring Retry con backoff exponencial para fallos transitorios del servicio externo",
+        "Si tec-enrichmentAI-ws responde con error, lanza EnrichmentAiException con contexto claro",
+        "Tests unitarios con EnrichmentAiClient mockeado"
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.8",
+      "name": "validation_service",
+      "title": "ValidationService",
+      "description": "**Como** servicio de validación de confianza **Quiero** implementar ValidationService **Para** determinar si los ítems extraídos por IA son suficientemente confiables o requieren revisión humana",
+      "acceptance": [
+        "validateItems(items) → ValidationResultDTO determina acción según umbrales de confianza OCR",
+        "calculateAverageConfidence(items) → Double calcula el promedio ponderado de ocrConfidence",
+        "determineAction(items): retorna AUTO_SAVED si averageConfidence >= 0.90; REQUIRES_VALIDATION si algún ítem tiene ocrConfidence < 0.70",
+        "filterItemsToReview(items) separa ítems en preFilled (confianza >= 0.70) y toReview (confianza < 0.70)",
+        "Tests unitarios con casos límite en los umbrales"
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.9",
+      "name": "sale_service",
+      "title": "SaleService",
+      "description": "**Como** servicio principal de negocio **Quiero** implementar SaleService **Para** orquestar el registro de ventas, consultas y cálculo de KPIs persistiendo en MySQL",
+      "acceptance": [
+        "registerSale(businessId, SaleRegistrationRequest) → Sale: crea Sale + SaleItem(s) y persiste vía repositorios con transacción @Transactional",
+        "getTodaySales(businessId) → List<Sale>: consulta ventas del día actual",
+        "getSaleHistory(businessId, days) → List<Sale>: consulta historial de los últimos N días",
+        "calculateKPIs(List<Sale>) → KPIResponse: calcula dailyTotal, transactionCount, averageTicket",
+        "Sin dependencia de Firebase ni de llamadas directas a Gemini API",
+        "Tests unitarios con repositorios mockeados"
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.10",
+      "name": "cloud_storage_service",
+      "title": "CloudStorageService (Google Cloud Storage)",
+      "description": "**Como** servicio de almacenamiento **Quiero** implementar CloudStorageService **Para** subir y gestionar las imágenes de cuadernos en Google Cloud Storage vinculadas a una venta",
+      "acceptance": [
+        "upload(bytes) → String (storageUrl): sube imagen al bucket configurado y retorna la URL",
+        "uploadWithMetadata(bytes, metadata) → String: sube imagen con metadatos adicionales",
+        "delete(objectName) → void: elimina objeto del bucket",
+        "Lanza CloudStorageException ante errores de GCS",
+        "El servicio es opcional en el flujo principal (el procesamiento no falla si GCS no está disponible)"
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.11",
+      "name": "sales_controller",
+      "title": "SalesController (REST endpoints)",
+      "description": "**Como** capa API REST **Quiero** implementar SalesController **Para** exponer los endpoints de procesamiento de imágenes y gestión de ventas bajo /api/v1/sales",
+      "acceptance": [
+        "POST /api/v1/sales/{businessId}/process-image: recibe MultipartFile, llama a EnrichmentAiService + ValidationService, retorna ProcessImageResponse",
+        "POST /api/v1/sales/{businessId}/register: recibe SaleRegistrationRequest, llama a SaleService, retorna SaleRegistrationResponse",
+        "GET /api/v1/sales/{businessId}/today: retorna lista de ventas del día",
+        "GET /api/v1/sales/{businessId}/history?days=N: retorna historial de ventas",
+        "Validación de request con @Valid y manejo de errores vía SalesExceptionHandler",
+        "Sin lógica de negocio en el controller; toda la lógica delega a los servicios",
+        "Tests unitarios con MockMvc"
+      ],
+      "sdd": true,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.12",
+      "name": "exception_handling",
+      "title": "Exception Handling (commons/exception)",
+      "description": "**Como** capa de manejo de errores **Quiero** implementar las excepciones del dominio y el handler global **Para** retornar respuestas de error consistentes y con códigos HTTP correctos",
+      "acceptance": [
+        "EnrichmentAiException (RuntimeException): para fallos del microservicio tec-enrichmentAI-ws",
+        "SaleNotFoundException (RuntimeException): cuando no se encuentra una venta por ID",
+        "ValidationException (RuntimeException): cuando los datos de entrada no pasan validación",
+        "CloudStorageException (RuntimeException): para fallos de GCS",
+        "SalesExceptionHandler (@RestControllerAdvice): mapea cada excepción a su código HTTP y cuerpo de respuesta estandarizado",
+        "Tests unitarios del handler con MockMvc"
+      ],
+      "sdd": false,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.13",
+      "name": "spring_configurations",
+      "title": "Spring Configurations (EnrichmentAiConfig, WebClientConfig, DataSourceConfig, RetryConfig, CorsConfig)",
+      "description": "**Como** capa de configuración **Quiero** implementar los @Configuration de Spring **Para** inicializar beans críticos del microservicio con los parámetros correctos",
+      "acceptance": [
+        "EnrichmentAiConfig: @Bean WebClient apuntando a ${enrichment-ai.base-url} con timeout configurable",
+        "WebClientConfig: @Bean WebClient base con interceptores de logging y timeout por defecto",
+        "CloudStorageConfig: @Bean Storage de GCS (opcional, cargado solo si se provee credencial)",
+        "DataSourceConfig: HikariCP con maxPoolSize=10",
+        "RetryConfig: @Bean RetryTemplate con exponentialBackoff(1000ms, multiplier=2, maxInterval=5000ms) y maxAttempts=3",
+        "CorsConfig: WebMvcConfigurer con orígenes permitidos configurables por perfil"
+      ],
+      "sdd": false,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.14",
+      "name": "commons_utils",
+      "title": "Utilidades (commons/util)",
+      "description": "**Como** capa de soporte transversal **Quiero** implementar las utilidades del proyecto **Para** centralizar operaciones repetitivas de fechas, imágenes, validación y logging",
+      "acceptance": [
+        "DateTimeUtils: helpers para operaciones con LocalDate/LocalDateTime (e.g. startOfDay, endOfDay)",
+        "ImageUtils: conversión de MultipartFile/bytes a Base64 y validación de formato/tamaño",
+        "ValidationUtils: helpers de validación de strings, BigDecimal y UUIDs",
+        "LoggingUtils: helpers para logging estructurado con MDC (businessId, traceId)",
+        "Tests unitarios para DateTimeUtils e ImageUtils"
+      ],
+      "sdd": false,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.15",
+      "name": "application_properties",
+      "title": "Application Properties (dev, prod, test profiles)",
+      "description": "**Como** configuración de la aplicación **Quiero** definir los archivos de propiedades por perfil **Para** que el microservicio se comporte correctamente en cada entorno",
+      "acceptance": [
+        "application.properties: propiedades base (puerto, nombre de aplicación, configuración JPA)",
+        "application-dev.properties: datasource local MySQL, URL de tec-enrichmentAI-ws en local, logging DEBUG",
+        "application-prod.properties: datasource Cloud SQL, URL de tec-enrichmentAI-ws en Cloud Run, logging INFO",
+        "application-test.properties: datasource H2 in-memory, tec-enrichmentAI-ws mockeado, Flyway deshabilitado o modo test",
+        "Todas las propiedades sensibles (passwords, keys) resueltas desde variables de entorno o Google Secret Manager"
+      ],
+      "sdd": false,
+      "status": "pending"
+    },
+    {
+      "id": "TASK-1.16",
+      "name": "integration_tests",
+      "title": "Integration Tests (SalesIntegrationTest)",
+      "description": "**Como** suite de pruebas de integración **Quiero** implementar SalesIntegrationTest **Para** verificar el flujo end-to-end del microservicio con base de datos real y tec-enrichmentAI-ws mockeado",
+      "acceptance": [
+        "Flujo completo: POST /process-image → EnrichmentAiService (mockeado) → ValidationService → respuesta correcta según nivel de confianza",
+        "Flujo completo: POST /register → SaleService → MySQL → SaleRegistrationResponse con ID generado",
+        "Flujo GET /today y GET /history retornan datos persistidos correctamente",
+        "Tests corren con perfil test (H2 o Testcontainers MySQL) y WireMock para tec-enrichmentAI-ws",
+        "Cobertura de escenario AUTO_SAVED (confianza >= 0.90) y REQUIRES_VALIDATION (algún ítem < 0.70)"
+      ],
+      "sdd": false,
+      "status": "pending"
+    }
+  ]
+}
