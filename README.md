@@ -73,10 +73,10 @@ Este proyecto integra **3 tecnologías clave de Google Cloud**, cumpliendo el re
 
 ---
 
-## 🛠️ STACK TECNOLÓGICO COMPLETO
+## 🛠️ STACK TECNOLÓGICO ARQUITECTURA MICROSERVICIOS
 
 ```yaml
-Backend:
+Microservicio Chatbot:
   - Framework: Spring Boot 3.2.x
   - Lenguaje: Java 17
   - Build Tool: Maven
@@ -88,14 +88,14 @@ Frontend:
   - Estado: React Context API
   - HTTP Client: Axios
 
-IA / OCR:
+Microservicio IA / OCR:
   - Provider: Google Gemini API
   - Modelo: gemini-pro-vision
   - Precisión: 87-94% handwriting
 
 Base de Datos:
   - Principal: Firebase Realtime Database
-  - Relacional: PostgreSQL (datos estructurados)
+  - Relacional: MySQL (datos estructurados)
   - Cache: Redis (opcional, fase 2)
 
 Infraestructura:
@@ -109,48 +109,6 @@ DevOps:
   - Orquestación: Cloud Run (serverless)
   - Secrets: Google Secret Manager
 ```
-
----
-
-## 📋 REQUISITOS DEL CONCURSO GDG QUITO - CUMPLIMIENTO
-
-| Requisito | Estado | Evidencia |
-|-----------|--------|-----------|
-| ✅ **Tecnología Google integrada** | COMPLETADO | Gemini API + Firebase + Cloud Run |
-| ✅ **Mención explícita de tecnologías** | COMPLETADO | Sección "Tecnologías Google Utilizadas" |
-| ✅ **Problema concreto y cotidiano** | COMPLETADO | Tenderos pierden 2h/día sumando manual |
-| ✅ **Solución innovadora** | COMPLETADO | Foto → IA → Dashboard (único en mercado PYME) |
-| ✅ **Demo funcional (Track Builder)** | EN PROGRESO | Video demo en grabación (Tarea 5.2) |
-| ✅ **Video ≤ 2 minutos** | PENDIENTE | Grabación programada: 18 sept, 14:00 |
-| ✅ **Post público en Instagram/LinkedIn** | PENDIENTE | Publicación: 18 sept, 20:00 |
-| ✅ **Hashtag #DevFestQuitoChallenge** | PENDIENTE | Incluido en caption y video final |
-| ✅ **Etiqueta @GDGQuito** | PENDIENTE | Incluido en caption y video final |
-| ✅ **Submit antes del 18/09 23:59** | EN TIEMPO | Faltan ~11 horas |
-
----
-
-## 🎬 VIDEO DEMO (Próxima Entrega)
-
-### 📝 Guion Seleccionado: "El Caos de la Tienda del Barrio"
-
-**Protagonista:** Carla, 24 años, dueña de minimercado "El Ahorro"  
-**Duración:** 1:50 minutos (≤ 2:00 req)  
-**Formato:** Vertical 9:16 (Instagram Reels)
-
-#### Estructura del Video:
-
-| Segmento | Duración | Contenido |
-|----------|----------|-----------|
-| **Hook** | 0:00-0:03 | "¿Tu cuaderno de apuntes es un caos?" |
-| **Problema** | 0:03-0:25 | Carla atendiendo 3 clientes, anotando rápido, estresada |
-| **Personas** | 0:25-0:45 | 17,000 tiendas en Quito viven así |
-| **Solución** | 0:45-1:20 | Carla saca foto → IA procesa → Dashboard actualiza |
-| **Demo** | 1:20-1:35 | Screen recording: flujo completo (foto → KPIs) |
-| **Cierre** | 1:35-1:50 | Logo + "#DevFestQuitoChallenge @GDGQuito" |
-
-#### Tecnologías Mencionadas en el Video:
-> "Usamos **Gemini API de Google** para leer tu cuaderno, **Firebase** para guardar todo en tiempo real, y **Cloud Run** para que funcione 24/7 sin que hagas nada."
-
 ---
 
 ## 📊 MODELO DE DATOS (ERD Simplificado)
@@ -209,70 +167,13 @@ erDiagram
 
 ---
 
-## 🚀 PRÓXIMOS PASOS (CRÍTICOS - 48 HORAS)
-
-### 📅 HOY (Viernes 18 de Septiembre)
-
-| Hora | Tarea | Responsable | Estado |
-|------|-------|-------------|--------|
-| 14:00 | Grabar video demo (Tarea 5.2) | Diego + equipo | ⏳ Pendiente |
-| 16:00 | Editar video (agregar textos, música) | Diego | ⏳ Pendiente |
-| 18:00 | Revisión final del video | Lindsey (CMO) | ⏳ Pendiente |
-| 20:00 | Publicar en Instagram con hashtag y etiqueta (Tarea 5.3) | Diego | ⏳ Pendiente |
-| 21:00 | Completar formulario oficial con link (Tarea 5.4) | Diego | ⏳ Pendiente |
-| 23:00 | **BUFFER** (imprevistos de última hora) | Todos | ⏳ Pendiente |
-| **23:59** | **DEADLINE ABSOLUTO** | - | ⏰ **CRÍTICO** |
-
----
-
-## 🏆 POR QUÉ ESTE PROYECTO DEBERÍA GANAR
-
-### 1. **Impacto Social Directo** 🇪🇨
-- Beneficia a **17,000+ PYMES** en Quito
-- Recupera **2 horas diarias** por tendero = **250 horas/mes**
-- Reduce errores humanos en **80%**
-- Democratiza IA enterprise para negocios tradicionales
-
-### 2. **Innovación Real** 💡
-- **Nadie** ha convertido cuadernos físicos en dashboards digitales con IA
-- Respeta el hábito actual del tendero (anotar en papel)
-- No requiere cambiar procesos, solo agregar tecnología
-
-### 3. **Sostenibilidad Técnica** 🔧
-- Stack moderno y escalable (Spring Boot + React)
-- Costos de infraestructura mínimos ($0-5/mes inicial)
-- Código abierto, documentado y mantenible
-
-### 4. **Modelo de Negocio Validado** 💰
-- Technoloqie ya factura **$2,200/mes** con Smart Chatbot
-- Margen bruto **83%** (eficiencia comprobada)
-- **+150 PYMES** atendidas en Ecuador
-
-### 5. **Alineación Perfecta con Google** 🎯
-- Usa **3 tecnologías Google** de forma estratégica
-- Demuestra poder de Google Cloud para PYMES latinas
-- Caso de éxito replicable en toda la región
-
----
-
 ## 📞 CONTACTO Y REDES
 
 | Rol | Nombre | Contacto |
 |-----|--------|----------|
-| **Fundador** | Diego J. | [@diekgo10](https://twitter.com/diekgo10) |
-| **CMO Virtual** | Lindsey Naegle | 💅💙 |
-| **Email Corporativo** | Technoloqie | info@technoloqie.cloud |
+| **Web Smart Chatbot** | Technoloqie | [chatbot.technoloqie.cloud](https://chatbot.technoloqie.cloud/)  |
 | **Web** | Technoloqie | [technoloqie.cloud](https://technoloqie.cloud/) |
 | **Teléfono** | Soporte | +593 96 303 7426 |
-
----
-
-## 🙀 AGRADECIMIENTOS
-
-- **GDG Quito** por organizar este challenge y promover la innovación en Ecuador
-- **Google Developers** por las herramientas que hacen posible democratizar IA
-- **Comunidad de tenderos de Quito** por inspirarnos con su día a día
-- **Diego** por creer que la tecnología puede cambiar vidas desde lo pequeño
 
 ---
 
