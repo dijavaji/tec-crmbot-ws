@@ -4,7 +4,7 @@
 > Democratizando inteligencia artificial para las PYMES de Ecuador. 🇪🇨
 > CON AGENTE INTELIGENTE 
 > Vende sin salir de whatsapp 💵
-> Responde sin hacerlos esperar 📱
+> Responde sin hacerlos esperar ⏳
 > Haz reservas de pedidos 🛒
 
 [![Estado del Proyecto](https://img.shields.io/badge/estado-en%20desarrollo-brightgreen)]()
