@@ -1,7 +1,11 @@
-# 🏆 Smart Ventas IA - Finalista GDG Quito "Innovating Together" 2026
+# 🏆 Smart Chatbot de Ventas IA - GDG Quito "Innovating Together" 2026
 
 > **Transforma tu cuaderno de apuntes en un dashboard digital con UNA sola foto.**  
 > Democratizando inteligencia artificial para las PYMES de Ecuador. 🇪🇨
+> CON AGENTE INTELIGENTE 
+> Vende sin salir de whatsapp 💵
+> Responde sin hacerlos esperar 📱
+> Haz reservas de pedidos 🛒
 
 [![Estado del Proyecto](https://img.shields.io/badge/estado-en%20desarrollo-brightgreen)]()
 [![Track](https://img.shields.io/badge/track-Builder-blue)]()
