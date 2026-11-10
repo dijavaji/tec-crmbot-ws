@@ -5,11 +5,11 @@ alwaysApply: false
 
 # Stack Tecnológico
 
-## Proyecto Actual: AuditBot AI
+## Proyecto Actual: CrmBot AI
 
-AuditBot AI es un microservicio Java Spring Boot responsable de auditar conversaciones usando analizadores de IA.
+CrmBot AI es un microservicio Java Spring Boot .
 
-El backend consume eventos de RabbitMQ, ejecuta múltiples estrategias de análisis de IA a través de Ollama Cloud, persiste resultados de auditoría en MySQL, y expone APIs REST consumidas por el dashboard.
+
 
 ## Core Technologies
 
@@ -29,8 +29,8 @@ El backend consume eventos de RabbitMQ, ejecuta múltiples estrategias de análi
 
 ## Messaging
 
-- **RabbitMQ**
-- Event-driven architecture
+
+
 
 ## AI Integration
 
@@ -42,7 +42,7 @@ El backend consume eventos de RabbitMQ, ejecuta múltiples estrategias de análi
 El proyecto prioriza:
 
 - **Separación de responsabilidades:** Controladores delgados, servicios con lógica de negocio, repositorios para persistencia
-- **Comunicación basada en eventos:** Consumo de mensajes desde RabbitMQ
+- Controller, Service, Repository architecture
 - **Resiliencia ante fallos externos:** Manejo robusto de excepciones en integraciones
 - **Extensibilidad de analizadores de IA:** Arquitectura de estrategias para múltiples proveedores
 - **Código mantenible y testeable:** Inyección de dependencias, pruebas unitarias e integración
